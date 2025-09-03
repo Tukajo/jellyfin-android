@@ -27,6 +27,7 @@ import org.jellyfin.mobile.R
 import org.jellyfin.mobile.app.ApiClientController
 import org.jellyfin.mobile.app.AppPreferences
 import org.jellyfin.mobile.bridge.ExternalPlayer
+import org.jellyfin.mobile.bridge.MediaSegments
 import org.jellyfin.mobile.bridge.NativeInterface
 import org.jellyfin.mobile.bridge.NativePlayer
 import org.jellyfin.mobile.data.entity.ServerEntity
@@ -39,7 +40,6 @@ import org.jellyfin.mobile.utils.Constants.FRAGMENT_WEB_VIEW_EXTRA_SERVER
 import org.jellyfin.mobile.utils.applyDefault
 import org.jellyfin.mobile.utils.applyWindowInsetsAsMargins
 import org.jellyfin.mobile.utils.dip
-import org.jellyfin.mobile.utils.enableServiceWorkerWorkaround
 import org.jellyfin.mobile.utils.extensions.getParcelableCompat
 import org.jellyfin.mobile.utils.extensions.replaceFragment
 import org.jellyfin.mobile.utils.fadeIn
@@ -56,6 +56,7 @@ class WebViewFragment : Fragment(), BackPressInterceptor, JellyfinWebChromeClien
     private lateinit var jellyfinWebViewClient: JellyfinWebViewClient
     private val nativePlayer: NativePlayer by inject()
     private lateinit var externalPlayer: ExternalPlayer
+    private val mediaSegments: MediaSegments by inject()
 
     lateinit var server: ServerEntity
         private set
@@ -77,10 +78,6 @@ class WebViewFragment : Fragment(), BackPressInterceptor, JellyfinWebChromeClien
         fileChooserCallback?.onReceiveValue(FileChooserParams.parseResult(result.resultCode, result.data))
     }
     private var fileChooserCallback: ValueCallback<Array<Uri>>? = null
-
-    init {
-        enableServiceWorkerWorkaround()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -190,6 +187,7 @@ class WebViewFragment : Fragment(), BackPressInterceptor, JellyfinWebChromeClien
         addJavascriptInterface(NativeInterface(requireContext()), "NativeInterface")
         addJavascriptInterface(nativePlayer, "NativePlayer")
         addJavascriptInterface(externalPlayer, "ExternalPlayer")
+        addJavascriptInterface(mediaSegments, "MediaSegments")
 
         loadUrl(server.hostname)
         postDelayed(timeoutRunnable, Constants.INITIAL_CONNECTION_TIMEOUT)

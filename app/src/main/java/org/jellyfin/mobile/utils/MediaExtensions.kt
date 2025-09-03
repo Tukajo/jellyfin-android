@@ -7,15 +7,14 @@ import android.media.AudioManager
 import android.media.MediaMetadata
 import android.media.session.MediaSession
 import android.media.session.PlaybackState
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.analytics.AnalyticsCollector
+import androidx.media3.common.C
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.analytics.AnalyticsCollector
 import org.jellyfin.mobile.player.source.JellyfinMediaSource
 import org.jellyfin.mobile.ui.content.ImageProvider
 import org.jellyfin.mobile.utils.extensions.width
 import org.jellyfin.sdk.model.api.ImageType
-import com.google.android.exoplayer2.audio.AudioAttributes as ExoPlayerAudioAttributes
+import androidx.media3.common.AudioAttributes as Media3AudioAttributes
 
 inline fun MediaSession.applyDefaultLocalAudioAttributes(contentType: Int) {
     val audioAttributes = AudioAttributes.Builder().apply {
@@ -34,7 +33,7 @@ fun JellyfinMediaSource.toMediaMetadata(): MediaMetadata = MediaMetadata.Builder
     item?.artists?.joinToString()?.let { artists ->
         putString(MediaMetadata.METADATA_KEY_ARTIST, artists)
     }
-    putLong(MediaMetadata.METADATA_KEY_DURATION, runTimeMs)
+    putLong(MediaMetadata.METADATA_KEY_DURATION, runTime.inWholeMilliseconds)
     val imageUri = ImageProvider.buildItemUri(itemId, ImageType.PRIMARY, item?.imageTags?.get(ImageType.PRIMARY))
     putString(MediaMetadata.METADATA_KEY_ART_URI, imageUri.toString())
 }.build()
@@ -79,10 +78,10 @@ fun AudioManager.getVolumeLevelPercent(): Int {
 }
 
 /**
- * Set ExoPlayer [ExoPlayerAudioAttributes], make ExoPlayer handle audio focus
+ * Configure [Media3AudioAttributes] to handle audio focus
  */
-inline fun ExoPlayer.applyDefaultAudioAttributes(@C.AudioContentType contentType: Int) {
-    val audioAttributes = ExoPlayerAudioAttributes.Builder()
+inline fun Player.applyDefaultAudioAttributes(@C.AudioContentType contentType: Int) {
+    val audioAttributes = Media3AudioAttributes.Builder()
         .setUsage(C.USAGE_MEDIA)
         .setContentType(contentType)
         .build()

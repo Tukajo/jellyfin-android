@@ -14,8 +14,8 @@ import android.widget.ProgressBar
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
 import org.jellyfin.mobile.R
 import org.jellyfin.mobile.app.AppPreferences
 import org.jellyfin.mobile.databinding.FragmentPlayerBinding
@@ -37,6 +37,7 @@ class PlayerGestureHelper(
     private val gestureIndicatorOverlayLayout: LinearLayout by playerBinding::gestureOverlayLayout
     private val gestureIndicatorOverlayImage: ImageView by playerBinding::gestureOverlayImage
     private val gestureIndicatorOverlayProgress: ProgressBar by playerBinding::gestureOverlayProgress
+    private var isOnPressingSpeedUp = false
 
     init {
         if (appPreferences.exoPlayerRememberBrightness) {
@@ -122,9 +123,20 @@ class PlayerGestureHelper(
 
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 playerView.apply {
-                    if (!isControllerVisible) showController() else hideController()
+                    if (!isControllerFullyVisible) showController() else hideController()
                 }
                 return true
+            }
+
+            override fun onLongPress(e: MotionEvent) {
+                if (!appPreferences.exoPlayerAllowPressSpeedUp) {
+                    return
+                }
+
+                with(fragment) {
+                    isOnPressingSpeedUp = true
+                    onPressSpeedUp(true)
+                }
             }
 
             override fun onScroll(
@@ -244,6 +256,12 @@ class PlayerGestureHelper(
                 unlockDetector.onTouchEvent(event)
             }
             if (event.action == MotionEvent.ACTION_UP) {
+                if (isOnPressingSpeedUp) {
+                    isOnPressingSpeedUp = false
+                    with(fragment) {
+                        onPressSpeedUp(false)
+                    }
+                }
                 // Hide gesture indicator after timeout, if shown
                 gestureIndicatorOverlayLayout.apply {
                     if (isVisible) {

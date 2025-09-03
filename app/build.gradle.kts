@@ -29,14 +29,13 @@ kotlin {
 
 android {
     namespace = "org.jellyfin.mobile"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 36
         versionName = project.getVersionName()
         versionCode = getVersionCode(versionName!!)
-        setProperty("archivesBaseName", "jellyfin-android-v$versionName")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -85,7 +84,6 @@ android {
         }
     }
 
-    @Suppress("UnstableApiUsage")
     buildFeatures {
         buildConfig = true
         viewBinding = true
@@ -105,6 +103,8 @@ android {
         schemaDirectory("$projectDir/schemas")
     }
 }
+
+base.archivesName.set("jellyfin-android-v${project.getVersionName()}")
 
 dependencies {
     val proprietaryImplementation by configurations
@@ -144,20 +144,13 @@ dependencies {
             "unstable-snapshot" -> version { strictly(JellyfinSdk.SNAPSHOT_UNSTABLE) }
         }
     }
-    implementation(libs.okhttp)
-    implementation(libs.okio)
-    implementation(libs.coil)
-    implementation(libs.cronet.embedded)
+    implementation(libs.bundles.coil)
 
     // Media
     implementation(libs.androidx.media)
     implementation(libs.androidx.mediarouter)
-    implementation(libs.bundles.exoplayer) {
-        // Exclude Play Services cronet provider library
-        exclude("com.google.android.gms", "play-services-cronet")
-    }
-    implementation(libs.jellyfin.exoplayer.ffmpegextension)
-    proprietaryImplementation(libs.exoplayer.cast)
+    implementation(libs.bundles.androidx.media3)
+    proprietaryImplementation(libs.androidx.media3.cast)
     proprietaryImplementation(libs.bundles.playservices)
 
     // Room

@@ -73,8 +73,7 @@
     <string name="dialog_web_view_outdated_message">Die von deinem Gerät verwendete WebView-Implementierung ist veraltet.
 \nBitte aktualisiere auf eine kompatible Version.</string>
     <string name="dialog_web_view_outdated">WebView veraltet</string>
-    <string name="dialog_web_view_not_supported_message">WebViews werden von diesem Gerät nicht unterstützt.
-\nInstalliere eine kompatible WebView-Implementierung oder wechsel zu einem unterstützten Gerät.</string>
+    <string name="dialog_web_view_not_supported_message">WebViews werden von diesem Gerät nicht unterstützt.\nInstalliere eine kompatible WebView-Implementierung oder wechsle zu einem unterstützten Gerät.</string>
     <string name="dialog_web_view_not_supported">WebView nicht unterstützt</string>
     <string name="pref_exoplayer_allow_background_audio_summary">Hintergrundwiedergabe von Videos zulassen (nur Ton)</string>
     <string name="pref_music_notification_always_dismissible_summary_on">Die Benachrichtigung kann immer verworfen werden, auch während der Medienwiedergabe</string>
@@ -103,7 +102,7 @@
     <string name="pref_subtitle_style">Untertitelstil anpassen</string>
     <string name="player_error_unspecific_exception">Beim Abspielen ist ein Fehler aufgetreten</string>
     <string name="menu_item_hardware_decoding">Hardware-Dekodierung</string>
-    <string name="button_use_different_server">Verwende einen anderen Server</string>
+    <string name="button_use_different_server">Einen anderen Server verwenden</string>
     <string name="bluetooth_permission_title">Bluetooth-Zugriff erlauben\?</string>
     <string name="bluetooth_permission_continue">Weiter</string>
     <string name="bluetooth_permission_granted">Bluetooth-Berechtigung wurde erteilt</string>
@@ -111,4 +110,25 @@
     <string name="wifi_only_summary">Medien werden nur über WLAN heruntergeladen.</string>
     <string name="mobile_data_summary">Medien werden über WLAN und mobile Daten heruntergeladen.</string>
     <string name="mobile_data_and_roaming_summary">Medien werden über WLAN, mobile Daten und Roaming-Netzwerke heruntergeladen.</string>
+    <string name="external_player_mpvkt_description">Ein Media Player basierend auf mpv-android, der eine schönere Benutzeroberfläche als der Standardplayer bietet.</string>
+    <string name="view_downloads">Downloads anzeigen</string>
+    <string name="failed_information">Laden der Media Informationen fehlgeschlagen</string>
+    <string name="failed_thumbnail">Laden des Vorschaubildes fehlgeschlagen</string>
+    <string name="download_notifications_description">Download Benachrichtigungen</string>
+    <string name="failed_network_method_check">Bitte überprüfe deine zugelassenen Optionen zum Herunterladen</string>
+    <string name="store_videos_in_internal_storage">Videos im internen Speicher ablegen</string>
+    <string name="stored_videos_in_internal_storage_desc">Videos wie Filme oder TV Shows werden im App internen Speicher abgelegt. Erlaube den Zugriff aus der App heraus.</string>
+    <string name="downloading_desc">Lade %1$d Titel herunter</string>
+    <string name="external_player_mpvkt">mpvKt Player</string>
+    <string name="confirm_deletion_desc">Möchtest du %1$s löschen?</string>
+    <string name="no">Nein</string>
+    <string name="yes">Ja</string>
+    <string name="thumbnail_desc">Vorschaubild</string>
+    <string name="downloaded">%1$s heruntergeladen</string>
+    <string name="pref_exoplayer_allow_press_speed_up">Halten zum Beschleunigen des Videos</string>
+    <string name="pref_exoplayer_allow_press_speed_up_summary">Berühre und halte den Bildschirm gedrückt, um die Wiedergabe kurzzeitig zu beschleunigen</string>
+    <string name="downloads">Downloads</string>
+    <string name="confirm_deletion">Löschen bestätigen</string>
+    <string name="tv_show_desc">%1$s - S%2$dE%3$d</string>
+    <string name="skip_media_segment">Überspringen</string>
 </resources>

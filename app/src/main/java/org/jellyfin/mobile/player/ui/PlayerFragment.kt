@@ -25,8 +25,8 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.ui.PlayerView
+import androidx.media3.common.Player
+import androidx.media3.ui.PlayerView
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.jellyfin.mobile.R
@@ -36,6 +36,7 @@ import org.jellyfin.mobile.databinding.FragmentPlayerBinding
 import org.jellyfin.mobile.player.PlayerException
 import org.jellyfin.mobile.player.PlayerViewModel
 import org.jellyfin.mobile.player.interaction.PlayOptions
+import org.jellyfin.mobile.player.ui.playermenuhelper.PlayerMenuHelper
 import org.jellyfin.mobile.utils.AndroidVersion
 import org.jellyfin.mobile.utils.BackPressInterceptor
 import org.jellyfin.mobile.utils.Constants
@@ -49,10 +50,13 @@ import org.jellyfin.mobile.utils.extensions.getParcelableCompat
 import org.jellyfin.mobile.utils.extensions.isLandscape
 import org.jellyfin.mobile.utils.extensions.keepScreenOn
 import org.jellyfin.mobile.utils.toast
+import org.jellyfin.sdk.model.api.MediaSegmentDto
 import org.jellyfin.sdk.model.api.MediaStream
 import org.koin.android.ext.android.inject
-import com.google.android.exoplayer2.ui.R as ExoplayerR
+import kotlin.math.max
+import androidx.media3.ui.R as Media3R
 
+@Suppress("TooManyFunctions")
 class PlayerFragment : Fragment(), BackPressInterceptor {
     private val appPreferences: AppPreferences by inject()
     private val viewModel: PlayerViewModel by viewModels()
@@ -159,10 +163,10 @@ class PlayerFragment : Fragment(), BackPressInterceptor {
             if (playerFullscreenHelper.isFullscreen) {
                 playerView.setPadding(0)
                 playerControlsView.updatePadding(
-                    left = systemInsets.left,
-                    top = systemInsets.top,
-                    right = systemInsets.right,
-                    bottom = systemInsets.bottom,
+                    left = max(insets.displayCutout?.safeInsetLeft ?: 0, systemInsets.left),
+                    top = max(insets.displayCutout?.safeInsetTop ?: 0, systemInsets.top),
+                    right = max(insets.displayCutout?.safeInsetRight ?: 0, systemInsets.right),
+                    bottom = max(insets.displayCutout?.safeInsetBottom ?: 0, systemInsets.bottom),
                 )
             } else {
                 playerView.updatePadding(
@@ -198,6 +202,9 @@ class PlayerFragment : Fragment(), BackPressInterceptor {
 
         // Set controller timeout
         suppressControllerAutoHide(false)
+
+        // Disable controller animations
+        playerView.setControllerAnimationEnabled(false)
 
         playerLockScreenHelper = PlayerLockScreenHelper(this, playerBinding, orientationListener)
         playerGestureHelper = PlayerGestureHelper(this, playerBinding, playerLockScreenHelper)
@@ -279,6 +286,10 @@ class PlayerFragment : Fragment(), BackPressInterceptor {
 
     fun onFastForward() = viewModel.fastForward()
 
+    fun onPreviousChapter() = viewModel.previousChapter()
+
+    fun onNextChapter() = viewModel.nextChapter()
+
     /**
      * @param callback called if track selection was successful and UI needs to be updated
      */
@@ -317,6 +328,10 @@ class PlayerFragment : Fragment(), BackPressInterceptor {
         return viewModel.setPlaybackSpeed(speed)
     }
 
+    fun onPressSpeedUp(isPressing: Boolean): Boolean {
+        return viewModel.setPressSpeedUp(isPressing, Constants.HOLD_SPEEDUP_MULTIPLIER)
+    }
+
     fun onDecoderSelected(type: DecoderType) {
         viewModel.updateDecoderType(type)
     }
@@ -327,6 +342,10 @@ class PlayerFragment : Fragment(), BackPressInterceptor {
 
     fun onSkipToNext() {
         viewModel.skipToNext()
+    }
+
+    fun onSkipMediaSegment(mediaSegmentDto: MediaSegmentDto?) {
+        viewModel.skipMediaSegment(mediaSegmentDto)
     }
 
     fun onPopupDismissed() {
@@ -354,7 +373,7 @@ class PlayerFragment : Fragment(), BackPressInterceptor {
                     }
                 }
                 setAspectRatio(aspectRational)
-                val contentFrame: View = playerView.findViewById(ExoplayerR.id.exo_content_frame)
+                val contentFrame: View = playerView.findViewById(Media3R.id.exo_content_frame)
                 val contentRect = with(contentFrame) {
                     val (x, y) = intArrayOf(0, 0).also(::getLocationInWindow)
                     Rect(x, y, x + width, y + height)
@@ -409,5 +428,9 @@ class PlayerFragment : Fragment(), BackPressInterceptor {
             // Reset screen brightness
             window.brightness = BRIGHTNESS_OVERRIDE_NONE
         }
+    }
+
+    fun setPlayerMenuHelper(menuHelper: PlayerMenuHelper) {
+        viewModel.setPlayerMenuHelper(menuHelper)
     }
 }

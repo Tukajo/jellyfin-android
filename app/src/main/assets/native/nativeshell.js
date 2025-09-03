@@ -1,24 +1,26 @@
 const features = [
-    "filedownload",
+    "castmenuhashchange",
+    "clientsettings",
     "displaylanguage",
-    "subtitleappearancesettings",
-    "subtitleburnsettings",
-    //'sharing',
+    "downloadmanagement",
     "exit",
+    "externallinks",
+    "filedownload",
     "htmlaudioautoplay",
     "htmlvideoautoplay",
-    "externallinks",
-    "clientsettings",
     "multiserver",
     "physicalvolumecontrol",
     "remotecontrol",
-    "castmenuhashchange"
+    "subtitleappearancesettings",
+    "subtitleburnsettings"
+//    'sharing'
 ];
 
 const plugins = [
     'NavigationPlugin',
     'ExoPlayerPlugin',
-    'ExternalPlayerPlugin'
+    'ExternalPlayerPlugin',
+    'MediaSegmentsPlugin'
 ];
 
 // Add plugin loaders
@@ -65,6 +67,10 @@ window.NativeShell = {
 
     downloadFiles(downloadInfo) {
         window.NativeInterface.downloadFiles(JSON.stringify(downloadInfo));
+    },
+
+    openDownloadManager() {
+        window.NativeInterface.openDownloadManager();
     },
 
     openClientSettings() {
